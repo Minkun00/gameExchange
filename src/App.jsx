@@ -6,16 +6,13 @@ import CreateAuction from './src/createAuction/createAuction';
 
 import myToken from './Hardhat_abis/MyToken.json';
 import myNFT from './Hardhat_abis/MyNFT.json';
-import myAuction from './Hardhat_abis/MyAuction.json';
 
 function App() {
   const nftContractABI = myNFT.abi;
   const tokenContractABI = myToken.abi;
-  const auctionContractABI = myAuction.abi;
 
-  const nftContractAddress = "0x2c31932075395d443eb6a793f503380ec3079990"; 
-  const tokenContractAddress = "0xc56d366f7af69280f5d7b5ee70b01142b6fc394e"; 
-  const auctionContractAddress = "0x5b673daad129dc3ee19817b88aaa537e11286d33"; 
+  const nftContractAddress = "0xe0cb2632b3bbf87fbac56b599b1b0007edea39d2"; 
+  const tokenContractAddress = "0xc601bf82879e0f6621458f68ed82a9df8c75d788"; 
 
   return (
     <Router> 
@@ -28,10 +25,8 @@ function App() {
             <CreateAuction
               nftContractABI={nftContractABI}
               tokenContractABI={tokenContractABI}
-              auctionContractABI={auctionContractABI}
               nftContractAddress={nftContractAddress}
               tokenContractAddress={tokenContractAddress}
-              auctionContractAddress={auctionContractAddress}
             />
           } />
         </Routes>
