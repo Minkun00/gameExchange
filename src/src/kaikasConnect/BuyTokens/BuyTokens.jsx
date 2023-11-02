@@ -9,7 +9,7 @@ const BuyTokenButton = ({ caver, tokenContractAddress, tokenAbi }) => {
       const tokenContract = new caver.klay.Contract(tokenAbi, tokenContractAddress);
       
       // Klay를 토큰 구매 함수로 전송
-      tokenContract.methods.purchaseTokens().send({
+      tokenContract.methods.purchase().send({
         from: account,
         value: caver.utils.toPeb(klayValue, 'KLAY'),
         gas: 500000,

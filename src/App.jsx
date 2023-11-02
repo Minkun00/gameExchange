@@ -11,8 +11,8 @@ function App() {
   const nftContractABI = myNFT.abi;
   const tokenContractABI = myToken.abi;
 
-  const nftContractAddress = "0xe0cb2632b3bbf87fbac56b599b1b0007edea39d2"; 
-  const tokenContractAddress = "0xc601bf82879e0f6621458f68ed82a9df8c75d788"; 
+  const nftContractAddress = "0x7a18e5223451c77bb023ebccd24fb4e6569f86b1"; 
+  const tokenContractAddress = "0x43188d7f49ae11b07b0ee8a0a5c97bfc94cb3494"; 
 
   return (
     <Router> 

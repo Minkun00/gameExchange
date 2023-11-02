@@ -44,7 +44,7 @@ const KaikasConnect = () => {
       )}
       {caver && (
         <div>
-          <BuyTokenButton caver={caver} tokenContractAddress="0xc601bf82879e0f6621458f68ed82a9df8c75d788" tokenAbi={MyTokenAbi.abi}/>
+          <BuyTokenButton caver={caver} tokenContractAddress="0x43188d7f49ae11b07b0ee8a0a5c97bfc94cb3494" tokenAbi={MyTokenAbi.abi}/>
         </div>
       )}
     </div>

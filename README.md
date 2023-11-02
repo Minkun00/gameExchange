@@ -1,6 +1,7 @@
 ## Contract Address
-- My NFT : 0xe0cb2632b3bbf87fbac56b599b1b0007edea39d2
-- Token : 0xc601bf82879e0f6621458f68ed82a9df8c75d788
+- Token : 0x43188d7f49ae11b07b0ee8a0a5c97bfc94cb3494
+- My NFT : 0x7a18e5223451c77bb023ebccd24fb4e6569f86b1
+- MarcketPlace : 0xbbfade63d9f71eb6297eee3f05144e2742c149e4
 
 ## 초기 의도
 

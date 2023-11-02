@@ -3,7 +3,7 @@ import useImageGenerator from './useImageGenerator';
 import Caver from 'caver-js';
 
 const caver = new Caver(window.klaytn);
-const nftContractAddress = "0xe0cb2632b3bbf87fbac56b599b1b0007edea39d2";
+const nftContractAddress = "0x7a18e5223451c77bb023ebccd24fb4e6569f86b1";
 
 export default function ItemToImg() {
   const [code, setCode] = useState('');
@@ -12,7 +12,6 @@ export default function ItemToImg() {
   const { imgUri, tokenUri, generateImage } = useImageGenerator();
 
   const nftContractABI = require('../../Hardhat_abis/MyNFT.json').abi;
-  const PRICE_PER_NFT = caver.utils.toPeb('0.01', 'KLAY'); // 이 값은 문자열로 반환됩니다.
 
   const handleSubmit = async () => {
       await generateImage(parseInt(code, 10), name, description);
@@ -24,13 +23,9 @@ export default function ItemToImg() {
       if (imgUri && tokenUri) {
         try {
           const nftContract = new caver.klay.Contract(nftContractABI, nftContractAddress)
-          const mintPrice = await nftContract.methods.ETH_PER_10_TOKENS().call(); // 이 값은 이미 peb 단위일 것입니다.
-          const valueToSend = caver.utils.toBN(mintPrice).div(caver.utils.toBN('10')).toString(); // 10으로 나누어 값을 계산합니다.
-  
-          const response = await nftContract.methods.mintNFT(tokenUri).send({
+          const response = await nftContract.methods.mint(tokenUri).send({
             from: window.klaytn.selectedAddress,
             gas: '2000000',
-            value: valueToSend // 계산된 값을 전달합니다.
           });
           console.log('NFT Minted!', response);
         } catch (error) {
