@@ -1,5 +1,9 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import useImageGenerator from './useImageGenerator';
+import Caver from 'caver-js';
+
+const caver = new Caver(window.klaytn);
+const nftContractAddress = "0x2c31932075395d443eb6a793f503380ec3079990";
 
 export default function ItemToImg() {
     const [code, setCode] = useState('');
@@ -7,9 +11,32 @@ export default function ItemToImg() {
     const [description, setDescription] = useState('');
     const { imgUri, tokenUri, generateImage } = useImageGenerator();
 
+    const nftContractABI = require('../../Hardhat_abis/MyNFT.json').abi;
+
     const handleSubmit = async () => {
-        generateImage(parseInt(code, 10), name, description);
+        await generateImage(parseInt(code, 10), name, description);
+        console.log(`imgUri : ${imgUri}, tokenUri : ${tokenUri}`)
     };
+
+    useEffect(() => {
+        const mintNFT = async () => {
+            if (imgUri && tokenUri ) {
+                try {
+                    const nftContract = new caver.klay.Contract(nftContractABI, nftContractAddress)
+                    console.log(`address : ${window.klaytn.selectedAddress}, tokenUri : ${tokenUri}`)
+                    const response = await nftContract.methods.mint(window.klaytn.selectedAddress, tokenUri).send({
+                        from: window.klaytn.selectedAddress,
+                        gas: '2000000'
+                      });
+                      console.log('NFT Minted!', response);
+                    } catch (error) {
+                      console.error('Error minting NFT:', error);
+                    }
+                }
+              };
+          
+              mintNFT();
+            }, [imgUri, tokenUri]);
 
   return (
     <div>
@@ -35,11 +62,8 @@ export default function ItemToImg() {
       <button onClick={handleSubmit}>Generate</button>
 
       {imgUri && <div>
-        <p>Image URI: {imgUri}</p>
         <img src={imgUri.replace('ipfs://', 'https://ipfs.io/ipfs/')} alt="Generated" />
       </div>}
-      
-      {tokenUri && <p>Token URI: {tokenUri}</p>}
     </div>
   );
 }
