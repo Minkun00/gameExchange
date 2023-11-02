@@ -311,6 +311,7 @@ module.exports = function (webpackEnv) {
         "stream": false,
         "crypto": false,
         "url": require.resolve("url/"),
+        "buffer": require.resolve("buffer/"),
         "crypto-browserify": require.resolve('crypto-browserify'), //if you want to use this module also don't forget npm i crypto-browserify 
       }, 
       // These are the reasonable defaults supported by the Node ecosystem.
@@ -576,6 +577,9 @@ module.exports = function (webpackEnv) {
       ].filter(Boolean),
     },
     plugins: [
+      new webpack.ProvidePlugin({
+        Buffer: ['buffer', 'Buffer'],
+      }),
       // Generates an `index.html` file with the <script> injected.
       new HtmlWebpackPlugin(
         Object.assign(
