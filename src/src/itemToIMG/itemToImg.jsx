@@ -8,7 +8,7 @@ export default function ItemToImg() {
     const { imgUri, tokenUri, generateImage } = useImageGenerator();
 
     const handleSubmit = async () => {
-        generateImage(code, name, description); // 이 함수가 이미 상태를 설정합니다.
+        generateImage(parseInt(code, 10), name, description);
     };
 
   return (

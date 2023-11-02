@@ -4,7 +4,7 @@ const axios = require("axios");
 const FormData = require("form-data");
 const sharp = require("sharp");
 const { Readable } = require('stream');
-
+const baseUrl = "https://gateway.pinata.cloud/ipfs/";
 const { ACCESS_KEY, SECRET_ACCESS_KEY } = process.env;
 
 const usePinata = async (code, _name, _description) => {   // code : item code, _name : name of the item, _description : description of the item
@@ -37,7 +37,7 @@ const usePinata = async (code, _name, _description) => {   // code : item code, 
   const tokenUri = await jsonToPinata(metaData);
   console.log("Pinata에 메타데이터 저장이 완료되었습니다. : ", tokenUri);
 
-  return { code, imgUrl, tokenUri };
+  return { imgUrl, tokenUri, metaData };
 };
 
 const disolveCode = async(code) => {
@@ -122,9 +122,9 @@ const getRankByCode = (code) => {
 
 
 const combineImages = async(code) => {
-  const backgroundPath = `./Images/Background/${code.background}.png`;
-  const itemPath = `./Images/${code.itemName}/${code.item}.png`;
-  const rankEdgePath = `./Images/RankEdge/${code.rank}.png`;
+  const backgroundPath = `./Pinata/Images/Background/${code.background}.png`;
+  const itemPath = `./Pinata/Images/${code.itemName}/${code.item}.png`;
+  const rankEdgePath = `./Pinata/Images/RankEdge/${code.rank}.png`;
 
   let combinedImage = sharp(backgroundPath);
   combinedImage = combinedImage.composite([{ input: rankEdgePath }]);
@@ -136,58 +136,36 @@ const combineImages = async(code) => {
 }
 
 const uploadImgToPinata = async (data) => {
-  // 이 함수의 매개변수로 들어오는 data는 FormData 객체 입니다.
-
   try {
-    const res = await axios
-      .post("https://api.pinata.cloud/pinning/pinFileToIPFS", data, {
-        maxContentLength: "Infinity",
-        headers: {
-          "Content-Type": `multipart/form-data; boundary=${data._boundary}`,
-          pinata_api_key: `${ACCESS_KEY}`, // ACCESS_KEY는 Pinata의 'API Key'입니다.
-          pinata_secret_api_key: `${SECRET_ACCESS_KEY}`, // SECRET_ACCESS_KEY는 Pinata의 'API Secret'입니다.
-        },
-      })
-      .then((res) => {
-        return `ipfs://${res.data.IpfsHash}`;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-
-    return res;
+    const response = await axios.post("https://api.pinata.cloud/pinning/pinFileToIPFS", data, {
+      maxContentLength: "Infinity",
+      headers: {
+        pinata_api_key: ACCESS_KEY,
+        pinata_secret_api_key: SECRET_ACCESS_KEY,
+      },
+    });
+    return `ipfs://${response.data.IpfsHash}`;
   } catch (err) {
-    console.error(err);
+    console.error("Error uploading image to Pinata:", err);
+    throw err; // 오류를 호출자에게 던져주어야 합니다.
   }
 };
 
 const jsonToPinata = async (metaData) => {
   try {
-    const baseUrl = "https://gateway.pinata.cloud/ipfs/"; // Pinata에 Metadata를 저장하고 나면 얻을 수 있는 ipfs hash값을 엔드포인트로 넣어야 합니다.
-    const data = JSON.stringify({
-      pinataMetadata: {
-        name: metaData.name,
+    const response = await axios.post("https://api.pinata.cloud/pinning/pinJSONToIPFS", JSON.stringify(metaData), {
+      headers: {
+        "Content-Type": "application/json",
+        pinata_api_key: ACCESS_KEY,
+        pinata_secret_api_key: SECRET_ACCESS_KEY,
       },
-      pinataContent: metaData,
     });
-
-    const res = await axios
-      .post("https://api.pinata.cloud/pinning/pinJSONToIPFS", data, {
-        headers: {
-          "Content-Type": "application/json",
-          pinata_api_key: `${ACCESS_KEY}`, // ACCESS_KEY는 Pinata의 'API Key'입니다.
-          pinata_secret_api_key: `${SECRET_ACCESS_KEY}`, // SECRET_ACCESS_KEY는 Pinata의 'API Secret'입니다.
-        },
-      })
-      .then((res) => {
-        const result = `${baseUrl}${res.data.IpfsHash}`; // result 예시 => "https://gateway.pinata.cloud/ipfs/Qmf1xUQnQHVDWhbXhMjqrWBCugDhmhSQvvfpQfd8ePoxCS"
-        return result;
-      });
-
-    return res;
+    return `${baseUrl}${response.data.IpfsHash}`;
   } catch (err) {
-    console.error(err);
+    console.error("Error saving metadata to Pinata:", err);
+    throw err; // 오류를 호출자에게 던져주어야 합니다.
   }
 };
 
-export default usePinata;
+
+module.exports = usePinata;

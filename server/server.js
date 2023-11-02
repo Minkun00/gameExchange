@@ -15,6 +15,7 @@ app.use(express.json()); // Body-parser is included in express
 const PORT = process.env.PORT || 3001; // React 기본 포트인 3000과 충돌을 피하기 위해
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
+  console.log(`directory : ${__dirname}`)
 });
 
 
@@ -23,8 +24,8 @@ app.listen(PORT, () => {
 app.post('/api/pinata', async (req, res) => {
   const { code, name, description } = req.body;
   try {
-    const result = await usePinata(code, name, description);
-    res.json({ code, imgUrl, tokenUri });
+    const { imgUrl, tokenUri, metaData } = await usePinata(code, name, description);
+    res.json({ imgUrl, tokenUri, metaData });
   } catch (error) {
     res.status(500).send({ error : error.message });
   }
