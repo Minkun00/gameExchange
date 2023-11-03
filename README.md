@@ -3,6 +3,17 @@
 - My NFT : 0x7a18e5223451c77bb023ebccd24fb4e6569f86b1
 - MarcketPlace : 0xbbfade63d9f71eb6297eee3f05144e2742c149e4
 
+## How to run?
+[env - server, for pinata api](https://github.com/Minkun00/gameExchange/blob/master/server/.env.example), [env - React, for Klaytn API](https://github.com/Minkun00/gameExchange/blob/master/src/.env.example)에 해당하는 내용 추가 후,
+- 참고로, [env - React, for Klaytn API](https://github.com/Minkun00/gameExchange/blob/master/src/.env.example)이거 처음에 내가 할 때 root directory에 있어야 됬던거 같기도 한데 뭐 그정도는 실행하시는 분이 한 번만 수고 좀 부탁드리겠습니다..
+
+```bash
+user~/exchanges$ npm i
+user~/exchanges$ cd server
+user~/exchanges$ node server.js
+user~/exchanges$ npm run start
+```
+
 ## 초기 의도
 
 게임에서 Item을 거래하는 것은 당연하다. 
