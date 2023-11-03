@@ -28,3 +28,30 @@ nft를 구매하고, 구매한 상태에서 `아이템 코드`로 export 하면,
 NFT를 응용하는 거래소를 사용하는 게임이면 Metamask, Kaikas를 연동할 것이다. 그 계좌 주소가 곧 id가 되는 것이고, 인증 방식에 id가 동일한지 확인하는 방법을
 
 게임을 만들었을 때 추가한다면 상당히 재밌을 것 같다.
+
+---
+
+물론, 이 내용에 추가해서 따로 `klaytn API`를 사용하여 주소에 따라 가지고 있는 NFT의 그림을 모두 가져오는 작업도 진행하였다.
+
+- smart contract는 **Token.sol**에 있다. remix에서 baobab testnet으로 deploy하여, abis들은 `src/Hardhat_abis/`에 있다.
+
+## Server
+위치 - `server/`
+
+port - `3001`(react에서 3000쓰기에 3001로 했다)
+
+게임 아이템의 코드를 입력하고, homepage에서 api호출을 하면 server에서 이미지를 생성하고 pinata를 통해 ipfs에 올린다.
+
+그리고, 그 이미지의 ipfs url을 받아서 react화면 상에 표출한다. 자동적으로 민팅을 진행하게 된다.
+
+이미지는 `server/Pinata/Images/`내에 저장되어 있으며, `Pinata.js`에 따라서 이미지를 가져올 수 있다.
+
+- 참고로, 코드는 숫자 4자리만 입력하면 된다. 코드 보면서 적당히 때려넣으면 될듯? 사실 만들어놓고 테스트 할 떄 그냥 1234나 2222만 넣었다.
+
+## react
+
+react상의 코드와 관련해서는 [여기](https://github.com/Minkun00/gameExchange/tree/master/src)에서 확인할 수 있다. 여기에도 README.md를 써두겠다.
+
+## config
+
+`npm run eject`해가지고 생겼다. `buffer`를 react상에서 쓰고 싶었는데, 그거 때문에 고치다가 어쩔 수 없이 `eject`해서 그렇다. 그리고 자질구레한 오류들을 고치기 위해서..
