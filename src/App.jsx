@@ -13,9 +13,10 @@ function App() {
   const nftContractABI = myNFT.abi;
   const tokenContractABI = myToken.abi;
   const marcketContractABI = myMarcket.abi;
-  const nftContractAddress = "0x3bd19bf2e77f90ce4d1333cda8890e2a68c30da3"; 
-  const tokenContractAddress = "0xee200efca30cc49871d21bfa109ec3dafd6925b3"; 
-  const marcketContractAddress = "0xfabedaa6af05b6e3016a0eb62dfc8c0252297e0c";
+  const nftContractAddress = process.env.REACT_APP_NFT_CONTRACT_ADDRESS;
+  const tokenContractAddress = process.env.REACT_APP_TOKEN_CONTRACT_ADDRESS;
+  const marketContractAddress = process.env.REACT_APP_MARKET_CONTRACT_ADDRESS;
+
 
   return (
     <Router> 
@@ -41,6 +42,8 @@ function App() {
           } />
             <Route path="/market" element={
             <Marketplace
+              tokenContractABI={tokenContractABI}
+              tokenContractAddress={tokenContractAddress}
               nftContractABI={nftContractABI}
               nftContractAddress={nftContractAddress}
               marcketContractABI={marcketContractABI}
