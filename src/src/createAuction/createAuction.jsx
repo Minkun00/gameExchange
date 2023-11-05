@@ -38,6 +38,7 @@ export default function CreateAuction({  nftContractABI, marcketContractABI, nft
           gas: '2000000',
         });
         console.log(`Token ID: ${selectedTokenId} is now listed with price ${price}`);
+        loadNFTs()
       } catch (error) {
         console.error("Setting marketplace approval or listing NFT failed", error);
       }
