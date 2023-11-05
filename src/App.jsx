@@ -1,6 +1,6 @@
 import React from 'react';
 import KaikasConnect from './src/kaikasConnect/KaikasConnect';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, NavLink } from 'react-router-dom';
 import ItemToImg from './src/itemToIMG/itemToImg';
 import CreateAuction from './src/createAuction/createAuction';
 import Marketplace from './src/buyItem/market';
@@ -15,13 +15,29 @@ function App() {
   const marcketContractABI = myMarcket.abi;
   const nftContractAddress = process.env.REACT_APP_NFT_CONTRACT_ADDRESS;
   const tokenContractAddress = process.env.REACT_APP_TOKEN_CONTRACT_ADDRESS;
-  const marketContractAddress = process.env.REACT_APP_MARKET_CONTRACT_ADDRESS;
+  const marcketContractAddress = process.env.REACT_APP_MARKET_CONTRACT_ADDRESS;
 
 
   return (
     <Router> 
       <div>
         <h1>Welcome to MyToken DApp</h1>
+        <nav>
+          <ul>
+            <li>
+              <NavLink to="/inputCode">Item to Image</NavLink>
+            </li>
+            <li>
+              <NavLink to="/createAuction">Create Auction</NavLink>
+            </li>
+            <li>
+              <NavLink to="/market">Marketplace</NavLink>
+            </li>
+            <li>
+              <NavLink to="/klaytnNFT">Klaytn NFT</NavLink>
+            </li>
+          </ul>
+        </nav>
         <KaikasConnect 
           tokenContractABI={tokenContractABI} 
           tokenContractAddress={tokenContractAddress} />

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 
 export default function useImageGenerator() {
   const [imgUri, setImgUri] = useState(''); 
