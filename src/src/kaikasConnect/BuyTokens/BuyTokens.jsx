@@ -27,7 +27,7 @@ const BuyTokenButton = ({ caver, tokenContractAddress, tokenAbi }) => {
   };
 
   return (
-    <button onClick={() => buyTokens('1')}>Buy Tokens with 1 KLAY</button>
+    <button onClick={() => buyTokens('5')}>Buy Tokens with 5 KLAY</button>
   );
 };
 
