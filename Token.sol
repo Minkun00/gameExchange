@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
-// 이 과정은 remix에서 진행하고 deploy했기에, 따로 여기에는 truffle, hardhat은 없다.
+
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -23,6 +23,10 @@ contract MyNFT is ERC721URIStorage, ERC721Enumerable, Ownable {
     Counters.Counter private _tokenIdCounter;
 
     constructor(string memory name, string memory symbol) ERC721(name, symbol) {}
+    
+    function setMarketplaceApproval(address marketplace, bool approved) external {
+        setApprovalForAll(marketplace, approved);
+    }
 
     // ERC721Enumerable를 사용할 때는 부모 컨트랙트의 함수를 오버라이드해야 합니다.
     function _beforeTokenTransfer(address from, address to, uint256 tokenId)
@@ -70,56 +74,93 @@ contract MyNFT is ERC721URIStorage, ERC721Enumerable, Ownable {
         _burn(tokenId);
         return true;
     }
+    // MyNFT 컨트랙트에 추가
+    function getCurrentTokenId() public view returns (uint256) {
+        return _tokenIdCounter.current();   
+    }
 }
 
 contract MyMarketplace is Ownable {
     MyNFT public nft;
     MyToken public token;
-    uint256 public listingFee = 0.1 ether;
+    uint256 public feePercentage = 10;      // 10% 수수료
 
     mapping(uint256 => bool) public isListed;
+    mapping(uint256 => uint256) public nftPrices;
+    mapping(uint256 => address) private _sellers;
+
 
     event NFTListed(uint256 tokenId, address seller);
-    event NFTUnlisted(uint256 tokenId);
+    event NFTSold(uint256 tokenId, uint256 price, address buyer);
 
     constructor(address _nft, address _token) {
         nft = MyNFT(_nft);
         token = MyToken(_token);
     }
 
-    function listNFT(uint256 tokenId) external {
+
+    function listNFT(uint256 tokenId, uint256 price) public {
         require(nft.ownerOf(tokenId) == msg.sender, "Not the owner");
         require(!isListed[tokenId], "Already listed");
-        
+        require(price > 0, "Price must be greater than zero");
+
         nft.transferFrom(msg.sender, address(this), tokenId);
         isListed[tokenId] = true;
-        
+        nftPrices[tokenId] = price;
+        _sellers[tokenId] = msg.sender;
         emit NFTListed(tokenId, msg.sender);
-    }
-
-    function unlistNFT(uint256 tokenId) external {
-        require(isListed[tokenId], "Not listed");
-        require(nft.ownerOf(tokenId) == address(this), "Not held by the marketplace");
-        
-        nft.transferFrom(address(this), msg.sender, tokenId);
-        isListed[tokenId] = false;
-        
-        emit NFTUnlisted(tokenId);
     }
 
     function purchaseNFT(uint256 tokenId) external payable {
         require(isListed[tokenId], "Not listed");
-        require(msg.value >= listingFee, "Insufficient payment");
+        uint256 price = nftPrices[tokenId];
+        require(token.allowance(msg.sender, address(this)) >= price, "token allowance not enough");
 
-        address seller = nft.ownerOf(tokenId);
-        nft.transferFrom(seller, msg.sender, tokenId);
+        uint256 fee = (price * feePercentage) / 100;
+        uint256 sellerProceeds = price - fee;
+        address seller = _sellers[tokenId];
+
+        require(token.transferFrom(msg.sender, owner(), fee), "Fee transfer failed");
+        require(token.transferFrom(msg.sender, seller, sellerProceeds), "Seller proceeds transfer failed");
+        nft.transferFrom(address(this), msg.sender, tokenId);
         isListed[tokenId] = false;
-        
-        // 판매 수수료를 판매자에게 지급
-        payable(seller).transfer(msg.value - listingFee);
+        nftPrices[tokenId] = 0;
+        delete _sellers[tokenId];
+
+        emit NFTSold(tokenId, price, msg.sender);
     }
 
-    function setListingFee(uint256 fee) external onlyOwner {
-        listingFee = fee;
-    }
+    function getListedNFTs() public view returns (uint256[] memory, uint256[] memory) {
+        uint256 itemCount = nft.getCurrentTokenId(); // 수정된 부분 
+        uint256 listedCount = 0; 
+
+        // 리스트된 NFT의 수를 세기 위한 루프
+        for (uint256 i = 0; i < itemCount; i++) {
+            if (isListed[i + 1]) { 
+                listedCount += 1;
+            }
+        }
+
+
+        uint256[] memory tokenIds = new uint256[](listedCount);
+        uint256[] memory prices = new uint256[](listedCount);
+
+        // 리스트된 NFT의 정보를 수집하는 루프
+        uint256 currentIndex = 0;
+        for (uint256 i = 0; i < itemCount; i++) {
+            if (isListed[i + 1]) {
+                uint256 currentId = i + 1;
+                tokenIds[currentIndex] = currentId;
+                prices[currentIndex] = nftPrices[currentId]; 
+                currentIndex += 1;
+            }
+        }
+        return (tokenIds, prices);
+    }    
 }
+
+
+
+
+
+

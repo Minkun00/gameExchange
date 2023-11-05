@@ -3,15 +3,12 @@ import useImageGenerator from './useImageGenerator';
 import Caver from 'caver-js';
 
 const caver = new Caver(window.klaytn);
-const nftContractAddress = "0x7a18e5223451c77bb023ebccd24fb4e6569f86b1";
 
-export default function ItemToImg() {
+export default function ItemToImg({ nftContractABI, nftContractAddress }) {
   const [code, setCode] = useState('');
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const { imgUri, tokenUri, generateImage } = useImageGenerator();
-
-  const nftContractABI = require('../../Hardhat_abis/MyNFT.json').abi;
 
   const handleSubmit = async () => {
       await generateImage(parseInt(code, 10), name, description);

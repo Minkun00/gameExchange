@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Caver from 'caver-js';
 import BuyTokenButton from './BuyTokens/BuyTokens';
-import MyTokenAbi from '../../Hardhat_abis/MyToken.json';
 
-const KaikasConnect = () => {
+const KaikasConnect = ({tokenContractABI, tokenContractAddress}) => {
   const [account, setAccount] = useState('');
   const [caver, setCaver] = useState(null);
 
@@ -44,7 +43,7 @@ const KaikasConnect = () => {
       )}
       {caver && (
         <div>
-          <BuyTokenButton caver={caver} tokenContractAddress="0x43188d7f49ae11b07b0ee8a0a5c97bfc94cb3494" tokenAbi={MyTokenAbi.abi}/>
+          <BuyTokenButton caver={caver} tokenContractAddress={tokenContractAddress} tokenAbi={tokenContractABI}/>
         </div>
       )}
     </div>

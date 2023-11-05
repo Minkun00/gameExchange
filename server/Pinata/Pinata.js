@@ -121,19 +121,25 @@ const getRankByCode = (code) => {
 }
 
 
-const combineImages = async(code) => {
-  const backgroundPath = `./Pinata/Images/Background/${code.background}.png`;
-  const itemPath = `./Pinata/Images/${code.itemName}/${code.item}.png`;
-  const rankEdgePath = `./Pinata/Images/RankEdge/${code.rank}.png`;
+const combineImages = async (codeObj) => {
+  const backgroundPath = `./Pinata/Images/Background/${codeObj.background}.png`;
+  const itemPath = `./Pinata/Images/${codeObj.itemName}/${codeObj.item}.png`;
+  const rankEdgePath = `./Pinata/Images/RankEdge/${codeObj.rank}.png`;
 
+  // Start with the background image
   let combinedImage = sharp(backgroundPath);
-  combinedImage = combinedImage.composite([{ input: rankEdgePath }]);
-  combinedImage = combinedImage.composite([{ input: itemPath }]);
-  
 
+  // Overlay the rank edge image
+  combinedImage = combinedImage.composite([{ input: rankEdgePath }]);
+
+  // Overlay the item image
+  combinedImage = combinedImage.composite([{ input: itemPath }]);
+
+  // Finalize the composite and convert to a Buffer
   const outputBuffer = await combinedImage.toBuffer();
   return outputBuffer;
-}
+};
+
 
 const uploadImgToPinata = async (data) => {
   try {

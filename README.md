@@ -1,7 +1,7 @@
 ## Contract Address
-- Token : 0x43188d7f49ae11b07b0ee8a0a5c97bfc94cb3494
-- My NFT : 0x7a18e5223451c77bb023ebccd24fb4e6569f86b1
-- MarcketPlace : 0xbbfade63d9f71eb6297eee3f05144e2742c149e4
+- Token : 0xee200efca30cc49871d21bfa109ec3dafd6925b3
+- My NFT : 0x3bd19bf2e77f90ce4d1333cda8890e2a68c30da3
+- MarcketPlace : 0xfabedaa6af05b6e3016a0eb62dfc8c0252297e0c
 
 ## How to run?
 [env - server, for pinata api](https://github.com/Minkun00/gameExchange/blob/master/server/.env.example), [env - React, for Klaytn API](https://github.com/Minkun00/gameExchange/blob/master/src/.env.example)에 해당하는 내용 추가 후,
